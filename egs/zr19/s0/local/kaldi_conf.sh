@@ -4,7 +4,7 @@
 # Script to create the basic directory structure
 ###################################################################################
 # Please set custom kaldi root.
-KALDI_ROOT=/work/bin-wu/.local/kaldi  # CHECKME
+KALDI_ROOT=/project/nakamura-lab08/Work/bin-wu/share/tools/kaldi # CHECKME
 
 # Set path.sh: contains the path to the Kaldi source directory
 #      replace the first line of path.sh with your custom kaldi root.
