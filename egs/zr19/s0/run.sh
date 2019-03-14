@@ -3,6 +3,5 @@ stage=1
 . local/kaldi_conf.sh
 . path.sh
 
-if [ $stage -le 0 ]; then
-    sh local/download.sh
-fi
+# You can download the database by local/download.sh
+db=/project/nakamura-lab08/Work/bin-wu/share/data/zr19/db
