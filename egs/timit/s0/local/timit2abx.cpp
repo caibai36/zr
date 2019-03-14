@@ -75,16 +75,25 @@ int main(int argc, char *argv[]) {
     while (inTrans >> from >> to) 
       m.insert(make_pair(from, to));
   }
-      
+
   /* start and end are in integer sample counts. */
-  double start, end;
+  double start, end, startTime, endTime;
   string label;
+  
+  /* Get the last efficient frame index assuming the last end time is the end of the audio. */
+  ifstream in2(argv[1]);
+  while (in2 >> start >> end >> label) {}
+  double lastEndTime = end / RATE;
+  int MAX_NUM_FRAME = int((lastEndTime - WINDOW_SIZE) / SHIFT) + 1;
+  
   while (in >> start >> end >> label) {
-    double startTime = start / RATE, endTime = end / RATE;
+    startTime = start / RATE,
+    endTime = end / RATE;
     string l = hasTrans ? m[label] : label;
     /* NOTE: start_frame_index included, end_frame_index excluded. */
-    for (int ind = time2frameInd(startTime); ind < time2frameInd(endTime); ind++) 
-      cout << frameInd2time(ind) << " " << l << endl;
+    for (int ind = time2frameInd(startTime); ind < time2frameInd(endTime); ind++)
+      if (ind < MAX_NUM_FRAME) 
+	cout << frameInd2time(ind) << " " << l << endl;
   }
   
   return 0;

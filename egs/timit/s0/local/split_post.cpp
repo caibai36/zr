@@ -30,7 +30,7 @@ void ReadPost(ifstream &inPost, const vector<string> &utter, const vector<int> &
 
     vector<string> p;
     while (s--) {
-      assert(inPost >> line);
+      assert(getline(inPost, line));
       p.push_back(line);
     }
     

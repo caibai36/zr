@@ -66,7 +66,7 @@ numits = 1500;
 
 % the frame label of clusters
 dlmwrite(strcat(mfcc_path, '.dpmm.flabel'), z);
-%% % the posteriorgram of each frame
-%% dlmwrite(strcat(mfcc_path, '.dpmm.post'), post);
-%% % the cluster label of posteriorgram in order 
-%% dlmwrite(strcat(mfcc_path, '.dpmm.post.clabel'), cluster_ids);
+% the posteriorgram of each frame
+dlmwrite(strcat(mfcc_path, '.dpmm.post'), post);
+% the cluster label of posteriorgram in order 
+dlmwrite(strcat(mfcc_path, '.dpmm.post.clabel'), cluster_ids);
