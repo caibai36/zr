@@ -1,0 +1,4 @@
+head eval/abx/result/exp/dpgmm/baseline/*/*/results.txt
+head eval/abx/result/exp/selffeat/feat/*/*/results.txt
+head eval/abx/result/exp/selffeat/post/*/*/results.txt
+# head eval/abx/result/exp/hybrid/mse/*/*/results.txt
