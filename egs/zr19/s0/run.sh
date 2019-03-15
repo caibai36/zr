@@ -1,7 +1,8 @@
-stage=4
+stage=5
 
 . local/kaldi_conf.sh
 . path.sh
+. cmd.sh
 
 # frame-shift of mfcc features
 frame_shift=10 # default 10
@@ -36,7 +37,7 @@ if [ $stage -le 1 ]; then
     echo -n "number of utterances in ${vads}: "
     awk '{print $1}' $vads | sort -u | wc -l
 
-    cp $uttids conf/$evalids
+    cp $uttids $evalids
 fi
 
 # uttid with format speak_utterance
@@ -79,7 +80,7 @@ if [ $stage -le 3 ]; then
     echo "---------------------------------------------------"
     echo "lvtln model training"
     echo "---------------------------------------------------"
-    
+
     # Train the linear Vocal Tract Length Normalization (lVTLN) to get the warping factors.
     # This script does not require to start with a trained model.
     # There is another script (steps/train_lvtln.sh) that requires an initial model.
@@ -94,7 +95,7 @@ if [ $stage -le 3 ]; then
     echo "---------------------------------------------------"
     echo "MFCC feature extraction with lVTLN of dataset"
     echo "---------------------------------------------------"
-    
+
     # Do Mel-frequency cepstral coefficients (mfcc) feature extraction.
     local/make_mfcc.sh --mfcc-config conf/mfcc.conf \
 		       --nj $feat_nj \
@@ -118,19 +119,60 @@ if [ $stage -le 3 ]; then
     cp data/test_vtln/feats.scp data/test_vtln/raw.scp
     # Dump the features after CMVN.
     local/make_cmvn.sh data/test_vtln $mfcc_vtln_dir
+fi
 
+if [ $stage -le 4 ]; then
     echo "---------------------------------------------------"
     echo "Dump the features after DPGMM."
     echo "---------------------------------------------------"
     mkdir -p exp/dpgmm/data
     copy-feats scp:data/test_vtln/feats.scp ark,t:- | sed -e 's/]//g' -e "s/^\w.*\[//" -e '/^\s*$/d' >  exp/dpgmm/data/test.vtln.mfcc
     copy-feats scp:data/test_vtln/feats.scp ark:- | add-deltas ark:- ark,t:- | sed -e 's/]//g' -e "s/^\w.*\[//" -e '/^\s*$/d' > exp/dpgmm/data/test.vtln.deltas.mfcc
+    sort -k2,2 -k4,4g data/test/segments > exp/dpgmm/data/test_segments_sorted
 fi
 
-if [ $stage -le 4 ]; then
+if [ $stage -le 5 ]; then
     echo "---------------------------------------------------"
     echo "Get dpgmm posterigrams and labels. (need access to matlab)"
     echo "---------------------------------------------------"
     # need access to matlab
     /usr/local/MATLAB/R2018b/bin/matlab -r "addpath('local');run_dpgmm('exp/dpgmm/data/test.vtln.deltas.mfcc');quit"
+fi
+
+if [ $stage -le 6 ]; then
+    echo "---------------------------------------------------"
+    echo "Evaluate the representation by ABX test"
+    echo "---------------------------------------------------"
+
+    mkdir -p local/bin
+    [ -f local/bin/split_post_seg ] || g++ local/split_post_seg.cpp -o local/bin/split_post_seg
+
+    file=exp/dpgmm/data/test.vtln.deltas.mfcc.dpmm.post
+    echo $(basename $file)
+    base=$(basename $file)
+    root=exp/dpgmm/post/${base}
+    evalids=conf/eval_uttids.txt
+
+    abx_post=eval/abx/post/${root}/
+    abx_result_cos=eval/abx/result/${root}/cos
+    abx_result_kl=eval/abx/result/${root}/kl
+    post_file=$file
+    segments_sorted=exp/dpgmm/data/test_segments_sorted
+
+    mkdir -p $abx_post $abx_result_cos $abx_result_kl
+    ./local/bin/split_post_seg data/test/utt2num_frames $post_file $segments_sorted $abx_post
+
+    while read -r line; do
+    	file=$abx_post/${line}.pos;
+	# modify postfix. eg: 146f_0584.pos -> 146f_0584.txt
+	# Remove the first time column, squeeze the spaces and cut the head and tail blanks
+    	cat $file  | tr -s ' ' | cut -d' ' -f2- | sed -e 's/^ //' -e 's/ $//' > $(echo $file | sed "s:pos$:txt:")
+    done < $evalids
+    rm $abx_post/*.pos
+
+    source activate eval
+
+     # cp -r ../zs19_docker/system/ .
+    ./local/eval.sh --DIST 'cos' --EMB $abx_post --RES $abx_result_cos
+    ./local/eval.sh --DIST 'kl' --EMB $abx_post --RES $abx_result_kl
 fi
