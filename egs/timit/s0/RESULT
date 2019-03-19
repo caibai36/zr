@@ -2,3 +2,5 @@ head eval/abx/result/exp/dpgmm/baseline/*/*/results.txt
 head eval/abx/result/exp/selffeat/feat/*/*/results.txt
 head eval/abx/result/exp/selffeat/post/*/*/results.txt
 # head eval/abx/result/exp/hybrid/mse/*/*/results.txt
+# head eval/abx/result/exp/hybrid/mse/*ext*/*/results.txt
+# bash local/sandbox/eval_mi.sh --post_dir eval/abx/post/exp/selffeat/post/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.post_post/
