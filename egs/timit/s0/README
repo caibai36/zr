@@ -1,3 +1,24 @@
+---------------------------------------------------
+This is the README of timit.
+---------------------------------------------------
+
+# Some directories for experiments
+# Self-supervised feature experiments
+local/sandbox/run_selffeat*
+# Hybrid system experiments
+local/sandbox/run_hybridsys*
+# Evaluation script of mutual information
+local/sandbox/run_eval_mi.*
+# Notebooks for the experiments 
+exp/sandbox/notebooks/
+# Data analysis for the experiments
+exp/sandbox/Analysis
+
+
+---------------------------------------------------
+Related to ABX
+---------------------------------------------------
+
 # First install ABX tools with branch zerospeech 2015
 # then prepare ABX test for timit
 (base) [bin-wu@ahccsclm02 test]$ timitdir=../../../../../zr/egs/timit/s0
