@@ -115,14 +115,15 @@ def main():
                                      epilog=example_str)
     parser.add_argument("--post_file", type=str, default="")
     parser.add_argument("--onehot_file", type=str, default="")
+    parser.add_argument("--delimiter", type=str, default=",")
 
     args = parser.parse_args()
 
     input_file = args.post_file if args.post_file else sys.stdin
     output_file = args.onehot_file if args.onehot_file else sys.stdout
 
-    post = np.loadtxt(input_file, delimiter=',')
-    np.savetxt(output_file, post2onehot(post), delimiter=',', fmt='%d')
+    post = np.loadtxt(input_file, delimiter=args.delimiter)
+    np.savetxt(output_file, post2onehot(post), delimiter=args.delimiter, fmt='%d')
     
 if __name__ == "__main__":
     main()
