@@ -50,7 +50,7 @@
 
 # #seq = np.loadtxt("label_seq")
 # #seq = torch.Tensor(seq).long()
-# #np.savetxt("label_onehot", seq2onehot(seq), fmt="%d")   
+# #np.savetxt("label_onehot", seq2onehot(seq), fmt="%d")
 
 # example_str="""
 # Note the onehot representation will has delimiter of ','.
@@ -76,7 +76,7 @@
 
 #     labelseq = torch.LongTensor(np.loadtxt(input_file))
 #     onehot = labelseq2onehot(labelseq)
-#     np.savetxt(output_file, onehot, fmt="%d", delimiter=",")   
+#     np.savetxt(output_file, onehot, fmt="%d", delimiter=",")
 
 import numpy as np
 import argparse
@@ -84,7 +84,7 @@ import sys
 
 def post2onehot(post: np.ndarray) -> np.ndarray:
     """Convert a posteriorgram to its onehot representation.
-    
+
     Arguments
     --------
     post: shape (seq_length, post_dim)
@@ -100,6 +100,8 @@ def post2onehot(post: np.ndarray) -> np.ndarray:
     array([[0., 0., 1.],
            [0., 1., 0.]])
     """
+    if post.ndim == 1:
+        post = post.reshape((1, post.shape[0]))
     onehot = np.zeros_like(post)
     onehot[range(post.shape[0]), post.argmax(-1)] = 1
 
@@ -115,14 +117,15 @@ def main():
                                      epilog=example_str)
     parser.add_argument("--post_file", type=str, default="")
     parser.add_argument("--onehot_file", type=str, default="")
+    parser.add_argument("--delimiter", type=str, default=",")
 
     args = parser.parse_args()
 
     input_file = args.post_file if args.post_file else sys.stdin
     output_file = args.onehot_file if args.onehot_file else sys.stdout
 
-    post = np.loadtxt(input_file, delimiter=',')
-    np.savetxt(output_file, post2onehot(post), delimiter=',', fmt='%d')
-    
+    post = np.loadtxt(input_file, delimiter=args.delimiter)
+    np.savetxt(output_file, post2onehot(post), delimiter=args.delimiter, fmt='%d')
+
 if __name__ == "__main__":
     main()
