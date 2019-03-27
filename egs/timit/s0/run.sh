@@ -205,6 +205,10 @@ if [ $stage -le 5 ]; then
     for file in exp/dpgmm/baseline/data/merge_label/*; do
 	awk '{print $1}' $file > data/test_time/test_abx_time/$(basename $file .mlabel.abx)
     done
+
+    for file in $(ls data/test_time/test_abx_time/*); do
+	echo $(basename $file) $(wc -l $file | awk '{print $1}');
+    done > data/test/utt2num_frames_abx_time
 fi
 
 if [ $stage -le 6 ]; then
