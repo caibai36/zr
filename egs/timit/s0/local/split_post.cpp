@@ -42,7 +42,7 @@ void ReadPost(ifstream &inPost, const vector<string> &utter, const vector<int> &
 
 void PrintPostABX(const string &outputDir, const map<string, vector<string> > &utt2post) {
   for (map<string, vector<string> >::const_iterator itr = utt2post.begin(); itr != utt2post.end(); itr++) {
-    string outFile =  outputDir + "/" + itr->first + ".clabel.abx"; // abx format of cluster label
+    string outFile =  outputDir + "/" + itr->first + ".post"; // abx format of cluster label
     ofstream out(outFile.c_str());
     for (int frameInd = 0; frameInd < itr->second.size(); frameInd++) {
       /* Start at the center of a frame with frame-length = 25ms and frame-shift = 10ms. */
