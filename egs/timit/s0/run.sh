@@ -140,14 +140,14 @@ if [ $stage -le 3 ]; then
     head -3 dpgmm/test/test.size > dpgmm/test3/test3.size
 
     # Split the posteriorgram and label to each utterance.
-    g++ local/split_post.cpp -o local/split_post
+    g++ local/split_post_old.cpp -o local/split_post_old
     mkdir -p dpgmm/test3/data/01.raw.mfcc/cluster_label/
-    ./local/split_post dpgmm/test3/test3.size dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel dpgmm/test3/data/01.raw.mfcc/cluster_label/
+    ./local/split_post_old dpgmm/test3/test3.size dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel dpgmm/test3/data/01.raw.mfcc/cluster_label/
 
     mkdir -p dpgmm/test/data/mfcc.deltas/cluster_label
-    ./local/split_post dpgmm/test/test.size dpgmm/test/timit_test_raw.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.deltas/cluster_label
+    ./local/split_post_old dpgmm/test/test.size dpgmm/test/timit_test_raw.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.deltas/cluster_label
     mkdir -p dpgmm/test/data/mfcc.vtln.deltas/cluster_label
-    ./local/split_post dpgmm/test/test.size dpgmm/test/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.vtln.deltas/cluster_label
+    ./local/split_post_old dpgmm/test/test.size dpgmm/test/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.vtln.deltas/cluster_label
 fi
 
 if [ $stage -le 4 ]; then
