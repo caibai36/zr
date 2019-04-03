@@ -21,4 +21,5 @@ if [ $stage -le 5 ]; then
     echo "---------------------------------------------------"
     # need access to matlab
     /usr/local/MATLAB/R2018b/bin/matlab -r "addpath('local');run_dpgmm_modified('exp/dpgmm/data/train.deltas.mfcc', 'exp/dpgmm/data/test.deltas.mfcc');quit"
+    mv exp/dpgmm/data/test.deltas.mfcc.dpmm.flabel exp/dpgmm/data/train.deltas.mfcc.dpmm.flabel
 fi
