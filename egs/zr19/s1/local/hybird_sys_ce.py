@@ -77,7 +77,8 @@ class ParallelCENet(nn.Module):
 
     def forward(self,
                 source: torch.FloatTensor,
-                target: torch.LongTensor) -> Dict:
+                target: torch.LongTensor = None,
+                train=True) -> Dict:
         """
         source: shape (batch_size, seq_length, input_dim)
         target: shape (seq_length,)
@@ -85,7 +86,7 @@ class ParallelCENet(nn.Module):
         o, (h, c) = self.lstm(source)
         assert torch.all(torch.eq(h[-1], o[:,-1,:])), "output and hidden dimension mismatching."
         predicted = self.softmax(self.project(h[-1]))
-        loss = self.loss(predicted, target)
+        loss = self.loss(predicted, target) if train else None
         return {'predicted': predicted, 'loss': loss}
 
 egstr=""
@@ -96,6 +97,7 @@ def main():
                                      epilog=egstr)
     parser.add_argument("--source_file", type=str, required=False, default="dpgmm/test3/timit_test3_raw.mfcc")
     parser.add_argument("--target_file", type=str, required=False, default="dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel")
+    parser.add_argument("--test_source_file", type=str, required=False, default="dpgmm/test3/timit_test3_raw2.mfcc")
     parser.add_argument("--output_file", type=str, required=False, default="dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel.b0.post")
     parser.add_argument("--seed", type=int, default=2019)
 
@@ -122,6 +124,7 @@ def main():
     num_layers = args.num_layers
     num_left_context = args.num_left_context
     learning_rate = args.learning_rate
+    test_source_file = args.test_source_file
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     torch.manual_seed(seed)
@@ -137,6 +140,8 @@ def main():
 
     source_data = np.loadtxt(source_file)
     target_data = np.loadtxt(target_file, delimiter=',') # posteriorgram
+    test_source_data = np.loadtxt(test_source_file)
+    test_target_data = np.loadtxt(test_source_file) # hack, fake target file, we don't need target file for test set
 
     input_dim = source_data.shape[1]
     assert target_data.min() >= 0, "the class of index should be greater or equal to zero"
@@ -145,7 +150,7 @@ def main():
     train_dataset = ParallelDataset(source_data, target_data, num_left_context=num_left_context)
     train_dataloader = DataLoader(dataset=train_dataset, batch_size=batch_size)
 
-    test_dataset = ParallelDataset(source_data, target_data, num_left_context=num_left_context)
+    test_dataset = ParallelDataset(test_source_data, test_target_data, num_left_context=num_left_context)
     test_dataloader = DataLoader(dataset=test_dataset, batch_size=batch_size)
 
     model = ParallelCENet(input_dim, hidden_dim, output_dim, num_layers)
@@ -177,9 +182,10 @@ def main():
     with torch.no_grad():
         for batch in test_dataloader:
             source = batch['source'].to(device).float()
-            target = batch['target'].to(device).long()
+            # target = batch['target'].to(device).long()
 
-            output = model(source, target)
+            # may be create model.train() and model.test() to change the self.train is a better idea
+            output = model(source, train=False)
             outputs.append(output['predicted'])
 
     print(torch.cat(outputs, dim=0).shape)
