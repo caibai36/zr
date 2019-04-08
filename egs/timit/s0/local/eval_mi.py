@@ -3,11 +3,11 @@ from sklearn import metrics
 import sys
 
 if len(sys.argv) == 1:
-    print("python eval_mi.py phone_label file")
+    print("python eval_mi.py label_phone file")
     exit()
 
-df = pd.read_csv(sys.argv[1], sep='\s+', names=['phone', 'label'])
-df.label=df.label.astype(str)
+df = pd.read_csv(sys.argv[1], sep='\s+', names=['label', 'phone'])
+df.phone=df.phone.astype(str)
 truth = df.phone
 predict = df.label
 (h, c, v) = metrics.homogeneity_completeness_v_measure(truth, predict)
