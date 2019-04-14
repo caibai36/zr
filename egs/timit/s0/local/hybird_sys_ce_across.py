@@ -61,7 +61,8 @@ class ParallelCENet(nn.Module):
                  input_dim: int,
                  hidden_dim: int,
                  output_dim: int,
-                 num_layers: int) -> None:
+                 num_layers: int,
+                 train: bool = True) -> None:
         """
         A neural network with cross entropy loss for parallel dataset with contexts.
         As the prediction will be posteriorgram, so we should add a softmax layer
@@ -74,7 +75,14 @@ class ParallelCENet(nn.Module):
         self.project = nn.Linear(hidden_dim, output_dim)
         self.loss = nn.CrossEntropyLoss()
         self.softmax = nn.Softmax(dim=-1)
+        self.train = train
 
+    def set_train(self) -> None:
+        self.train = True
+
+    def set_eval(self) -> None:
+        self.train = False
+    
     def forward(self,
                 source: torch.FloatTensor,
                 target: torch.LongTensor = None,
@@ -85,9 +93,14 @@ class ParallelCENet(nn.Module):
         """
         o, (h, c) = self.lstm(source)
         assert torch.all(torch.eq(h[-1], o[:,-1,:])), "output and hidden dimension mismatching."
+        if type(target) == type(None):  assert self.train == False, "No target, assuming evaluating with train flag False"
         predicted = self.softmax(self.project(h[-1]))
-        loss = self.loss(predicted, target) if train else None
-        return {'predicted': predicted, 'loss': loss}
+        if self.train:
+            loss = self.loss(predicted, target)
+            return {'predicted': predicted, 'loss': loss}
+        else:
+            return {'predicted': predicted}
+            
 
 egstr=""
 
@@ -179,13 +192,14 @@ def main():
                 running_loss = 0
 
     outputs = []
+    model.set_eval()
     with torch.no_grad():
         for batch in test_dataloader:
             source = batch['source'].to(device).float()
             # target = batch['target'].to(device).long()
 
             # may be create model.train() and model.test() to change the self.train is a better idea
-            output = model(source, train=False)
+            output = model(source)
             outputs.append(output['predicted'])
 
     print(torch.cat(outputs, dim=0).shape)
