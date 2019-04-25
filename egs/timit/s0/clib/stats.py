@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.stats import t
 from pprint import pprint
 
+
 def t_test(v1: np.ndarray,
            v2: np.ndarray = None,
            alternative: str = None,
@@ -49,7 +50,7 @@ def t_test(v1: np.ndarray,
     ++++++++++++++++++++++++++++++++++++++++++++++
     Welch Two Sample t-test (unpaired, two-tailed)
     ++++++++++++++++++++++++++++++++++++++++++++++
-    
+
     In python
     ---------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
@@ -79,7 +80,7 @@ def t_test(v1: np.ndarray,
     # sample estimates:
     # mean of x mean of y
     # 10.297778  8.29333
-    
+
     ++++++++++++++++++++++++++++++++++++++++++++++
     Welch Two Sample t-test (unpaired, one-tailed)
     ++++++++++++++++++++++++++++++++++++++++++++++
@@ -163,7 +164,7 @@ def t_test(v1: np.ndarray,
     #  'significance_level': 0.05,
     #  't': 2.871151268093026,
     #  'title': 'Paired t-test (one tailed)'}
-    
+
     In R
     ----
     v1=c(9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19)
@@ -244,18 +245,21 @@ def t_test(v1: np.ndarray,
     if v2 is None:
         return one_sample_t_test(v1, alpha, alternative)  # One sample t test
     elif paired:
-        return two_sample_t_test_paired(v1, v2, alpha, alternative) # Two sample paired t test
+        # Two sample paired t test
+        return two_sample_t_test_paired(v1, v2, alpha, alternative)
     else:
-        return two_sample_t_test_unpaired(v1, v2, alpha, alternative) # Two sample unpaired t test
+        # Two sample unpaired t test
+        return two_sample_t_test_unpaired(v1, v2, alpha, alternative)
+
 
 def bootstrap_t_test(v1: np.ndarray,
-                    v2: np.ndarray = None,
-                    alternative: str = None,
-                    paired: bool = False,
-                    alpha: float = 0.05,
-                    bootnum: int = 599,
-                    csv_file: str = None,
-                    seed: int = 2019) -> dict:
+                     v2: np.ndarray = None,
+                     alternative: str = None,
+                     paired: bool = False,
+                     alpha: float = 0.05,
+                     bootnum: int = 599,
+                     csv_file: str = None,
+                     seed: int = 2019) -> dict:
     """
     The bootstrap t-tests
         Bootstrap unpaired t-test as described in Efron and Tibshirani (1993), (Algorithm 16.2, p224) (checked by R result)
@@ -281,7 +285,7 @@ def bootstrap_t_test(v1: np.ndarray,
          Larry Wasserman suggests B = 10000 is usually sufficient in practice. 
     csv_file: the name of the file to store the test statistics of every sample
     seed: the numpy seed to ensure we can repeat the experiemnts for bootstrap
-    
+
     Returns
     -------
     A dictionary including information of test information
@@ -302,7 +306,7 @@ def bootstrap_t_test(v1: np.ndarray,
     print(bootstrap_t_test(v1, bootnum=100000))
     print(bootstrap_t_test(v1, alternative="greater", bootnum=100000))
     print(bootstrap_t_test(v1, alternative="less", bootnum=100000))
-    
+
     Checked by R (only bootstrap unpaired t-test; paired and one sample implemented according to Efron and Tibshirani (1993))
     ------------------------------------------
     +++++++++++++++++++++++++++++++++
@@ -322,7 +326,7 @@ def bootstrap_t_test(v1: np.ndarray,
     #        -0.73638333, -1.493951  ]),
     #  't_obs': 3.009133495521211,
     #  'title': 'Bootstrap Welch Two sample t-test (unpaired, two tailed)'}
-    
+
     In R
     ----
     library("nonpar")
@@ -384,7 +388,7 @@ def bootstrap_t_test(v1: np.ndarray,
     #        -0.73638333, -1.493951  ]),
     #  't_obs': 3.009133495521211,
     #  'title': 'Bootstrap Welch Two sample t-test (unpaired, one tailed)'}
-    
+
     In R
     ----
     library("nonpar")
@@ -401,7 +405,7 @@ def bootstrap_t_test(v1: np.ndarray,
     # 'less'
     # $p.value
     # 0.99604
-    
+
     In Python
     ---------
     ++++++++++++++++++++++++++
@@ -467,12 +471,13 @@ def bootstrap_t_test(v1: np.ndarray,
     #  'title': 'Bootstrap one sample t-test (one tailed)'}
 
 """
-    if v2 is None: # Bootstrap one sample t test
+    if v2 is None:  # Bootstrap one sample t test
         return bootstrap_one_sample_t_test(v1, alpha, alternative, bootnum, csv_file, seed)
-    elif paired: # Bootstrap two sample paired t test
+    elif paired:  # Bootstrap two sample paired t test
         return bootstrap_two_sample_t_test_paired(v1, v2, alpha, alternative, bootnum, csv_file, seed)
-    else: # Bootstrap two sample unpaired t test (checked by R)
-        return bootstrap_two_sample_t_test_unpaired(v1, v2, alpha, alternative, bootnum, csv_file, seed) 
+    else:  # Bootstrap two sample unpaired t test (checked by R)
+        return bootstrap_two_sample_t_test_unpaired(v1, v2, alpha, alternative, bootnum, csv_file, seed)
+
 
 def bootstrap_ci(v, bootnum=599, bootfunc=np.mean, alpha=0.05, csv_file=None, seed=2019):
     """
@@ -525,8 +530,10 @@ def bootstrap_ci(v, bootnum=599, bootfunc=np.mean, alpha=0.05, csv_file=None, se
     assert len(v.shape) == 1, "only support the one dimension numpy array"
     with NumpyRNGContext(seed):
         boot_stat = bootstrap(v, bootnum, bootfunc=bootfunc)
-    if csv_file: np.savetxt(csv_file, boot_stat, fmt="%.4f")
+    if csv_file:
+        np.savetxt(csv_file, boot_stat, fmt="%.4f")
     return {'ci': np.quantile(boot_stat, [alpha / 2, 1 - alpha / 2]), 'stat': boot_stat}
+
 
 class NumpyRNGContext:
     """
@@ -574,6 +581,7 @@ class NumpyRNGContext:
         from numpy import random
 
         random.set_state(self.startstate)
+
 
 def bootstrap(data, bootnum=100, samples=None, bootfunc=None, *args, **kwargs):
     """
@@ -709,6 +717,7 @@ def bootstrap(data, bootnum=100, samples=None, bootfunc=None, *args, **kwargs):
 
     return boot
 
+
 def df_bootstrap(data, bootnum=100, samples=None, bootfunc=None, *args, **kwargs):
     """bootfunc input an array with shape (N, D), output an array with shape (D, )
 
@@ -733,8 +742,10 @@ def df_bootstrap(data, bootnum=100, samples=None, bootfunc=None, *args, **kwargs
         # 0  1.333333  1.333333
         # 1  2.333333  2.333333
        """
-    data_values = bootstrap(data.values, bootnum, samples, bootfunc, *args, **kwargs)
+    data_values = bootstrap(data.values, bootnum,
+                            samples, bootfunc, *args, **kwargs)
     return pd.DataFrame(data_values, columns=data.columns)
+
 
 def two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None):
     """
@@ -750,7 +761,8 @@ def two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None):
     # t.test(v1, v2)
     # t.test(v1, v2, alternative = "greater")
     """
-    assert len(v1.shape) == 1 and len(v2.shape) == 1, "only support the one dimension numpy array"
+    assert len(v1.shape) == 1 and len(
+        v2.shape) == 1, "only support the one dimension numpy array"
     assert alternative == None or alternative == "greater", "alternative have to be empty or greater"
 
     result = {}
@@ -774,14 +786,16 @@ def two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None):
     result['mean_v2'] = v2.mean()
 
     # distance_variance
-    std1 = v1.std(ddof=1)  # make std of numpy same as sd in R, normalized by n - 1
+    # make std of numpy same as sd in R, normalized by n - 1
+    std1 = v1.std(ddof=1)
     std2 = v2.std(ddof=1)
     mean_var1 = pow(std1, 2) / n1
     mean_var2 = pow(std2, 2) / n2
-    pooled_variance = mean_var1 +  mean_var2
+    pooled_variance = mean_var1 + mean_var2
 
     # t_quantile
-    degrees_of_freedom = pow(pooled_variance, 2) / ((pow(mean_var1, 2) / (n1 - 1) + pow(mean_var2, 2) / (n2 - 1)))
+    degrees_of_freedom = pow(
+        pooled_variance, 2) / ((pow(mean_var1, 2) / (n1 - 1) + pow(mean_var2, 2) / (n2 - 1)))
     result['df'] = degrees_of_freedom
 
     # confidence interval
@@ -806,6 +820,7 @@ def two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None):
 
     return result
 
+
 def two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None):
     """
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
@@ -820,9 +835,11 @@ def two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None):
     # t.test(v1, v2, paired=TRUE)
     # t.test(v1, v2, paired=TRUE, alternative="greater")
     """
-    assert len(v1.shape) == 1 and len(v2.shape) == 1, "only support the one dimension numpy array"
+    assert len(v1.shape) == 1 and len(
+        v2.shape) == 1, "only support the one dimension numpy array"
     assert alternative == None or alternative == "greater", "alternative have to be empty or greater"
-    assert len(v1) == len(v2), "We are using paired T-test, the number of samples are same"
+    assert len(v1) == len(
+        v2), "We are using paired T-test, the number of samples are same"
 
     result = {}
     if not alternative:
@@ -851,7 +868,7 @@ def two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None):
     result['df'] = degrees_of_freedom
 
     # confidence interval
-    t_quantile = t.ppf(1 - alpha / 2, df = degrees_of_freedom)
+    t_quantile = t.ppf(1 - alpha / 2, df=degrees_of_freedom)
     lower = data_distance - t_quantile * np.sqrt(mean_variance)
     upper = data_distance + t_quantile * np.sqrt(mean_variance)
     # confidence interval for alternative "greater"
@@ -864,13 +881,14 @@ def two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None):
     # p-value
     t_stat = data_distance / np.sqrt(mean_variance)
     result['t'] = t_stat
-    p_value = (1 - t.cdf(t_stat, df = degrees_of_freedom)) * 2
+    p_value = (1 - t.cdf(t_stat, df=degrees_of_freedom)) * 2
     # p-value for alternative "greater"
     if alternative == "greater":
         p_value /= 2
     result['p-value'] = p_value
 
     return result
+
 
 def one_sample_t_test(v, alpha=0.05, alternative=None):
     """
@@ -911,7 +929,7 @@ def one_sample_t_test(v, alpha=0.05, alternative=None):
     result['df'] = degrees_of_freedom
 
     # confidence interval
-    t_quantile = t.ppf(1 - alpha / 2, df = degrees_of_freedom)
+    t_quantile = t.ppf(1 - alpha / 2, df=degrees_of_freedom)
     lower = data_distance - t_quantile * np.sqrt(mean_variance)
     upper = data_distance + t_quantile * np.sqrt(mean_variance)
     # confidence interval for alternative "greater"
@@ -924,7 +942,7 @@ def one_sample_t_test(v, alpha=0.05, alternative=None):
     # p-value
     t_stat = data_distance / np.sqrt(mean_variance)
     result['t'] = t_stat
-    p_value = (1 - t.cdf(t_stat, df = degrees_of_freedom)) * 2
+    p_value = (1 - t.cdf(t_stat, df=degrees_of_freedom)) * 2
     # p-value for alternative "greater"
     if alternative == "greater":
         p_value /= 2
@@ -932,13 +950,14 @@ def one_sample_t_test(v, alpha=0.05, alternative=None):
 
     return result
 
+
 def test_t_test():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
 
     # Two sample unpaired t test
-    pprint(t_test(v1, v2, paired=False)) # two-tailed
-    pprint(t_test(v1, v2, paired=False, alternative="greater")) # one-tailed
+    pprint(t_test(v1, v2, paired=False))  # two-tailed
+    pprint(t_test(v1, v2, paired=False, alternative="greater"))  # one-tailed
 
     # Two sample paired t test
     pprint(t_test(v1, v2, paired=True))
@@ -948,21 +967,26 @@ def test_t_test():
     pprint(t_test(v1))
     pprint(t_test(v1, alternative="greater"))
 
+
 def test_boostrap():
     with NumpyRNGContext(2019):
-        boot_result = bootstrap(np.array([[1,1], [2, 2], [3, 3]]), bootnum=2)
+        boot_result = bootstrap(np.array([[1, 1], [2, 2], [3, 3]]), bootnum=2)
         print(boot_result)
     with NumpyRNGContext(2019):
-        boot_result = bootstrap(np.array([[1,1], [2, 2], [3, 3]]), bootnum=2, bootfunc=np.mean)
-        #print(boot_result)
+        boot_result = bootstrap(
+            np.array([[1, 1], [2, 2], [3, 3]]), bootnum=2, bootfunc=np.mean)
+        # print(boot_result)
     with NumpyRNGContext(2019):
-        boot_result = bootstrap(np.array([[1,1], [2, 2], [3, 3]]), bootnum=2, bootfunc=np.mean, axis=0)
+        boot_result = bootstrap(
+            np.array([[1, 1], [2, 2], [3, 3]]), bootnum=2, bootfunc=np.mean, axis=0)
         print(boot_result)
 
-    df=pd.DataFrame(np.array([[1,1], [2, 2], [3, 3]]), columns=["first", "second"])
+    df = pd.DataFrame(np.array([[1, 1], [2, 2], [3, 3]]), columns=[
+                      "first", "second"])
     print(df)
     with NumpyRNGContext(2019):
         print(df_bootstrap(df, bootnum=2, bootfunc=np.mean, axis=0))
+
 
 def test_boostrap_ci():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
@@ -975,13 +999,15 @@ def test_boostrap_ci():
     diff_v = v1 - v2
     result = bootstrap_ci(diff, bootnum=100000, bootfunc=np.mean, alpha=0.05)
     print({'py_ci': result['ci'], 'r_ci': "[1.364,  9.818]"})
-    result_v = bootstrap_ci(diff_v, bootnum=100000, bootfunc=np.mean, alpha=0.05)
+    result_v = bootstrap_ci(diff_v, bootnum=100000,
+                            bootfunc=np.mean, alpha=0.05)
     print({'py_ci': result_v['ci'], 'r_ci': "[0.701,  3.266]"})
+
 
 def bootstrap_two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None, bootnum=599, csv_file=None, seed=2019):
     """
     # Bootstrap unpaired t-test as described in Efron and Tibshirani (1993), (Algorithm 16.2, p224)
-    
+
     # In python:
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
@@ -1002,7 +1028,8 @@ def bootstrap_two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None, b
     set.seed(2019)
     boot.t.test(x = v1, y = v2, reps = 100000, alternative="less")
     """
-    assert len(v1.shape) == 1 and len(v2.shape) == 1, "only support the one dimension numpy array"
+    assert len(v1.shape) == 1 and len(
+        v2.shape) == 1, "only support the one dimension numpy array"
     assert alternative == None or alternative == "greater" or alternative == "less" or alternative == "two.sided",\
         "alternative have to be empty(default, same as two.sided) or greater or less or two.sided"
 
@@ -1035,20 +1062,25 @@ def bootstrap_two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None, b
     def t_stat_two_samples_with_pooled_variance(mean1, mean2, var1, var2, n1, n2):
         return (mean1 - mean2) / np.sqrt(var1 / n1 + var2 / n2)
 
-    t_stat_observed = t_stat_two_samples_with_pooled_variance(v1.mean(), v2.mean(), v1.var(ddof=1), v2.var(ddof=1), len(v1), len(v2))
+    t_stat_observed = t_stat_two_samples_with_pooled_variance(
+        v1.mean(), v2.mean(), v1.var(ddof=1), v2.var(ddof=1), len(v1), len(v2))
     result['t_obs'] = t_stat_observed
     v1, v2 = two_sample_common_mean_normalization(v1, v2)
 
     with NumpyRNGContext(seed):
-        boot_mean_var_len1 = bootstrap(v1, bootnum=bootnum, bootfunc=lambda v: np.array([v.mean(), v.var(ddof=1), len(v)]))
-        boot_mean_var_len2 = bootstrap(v2, bootnum=bootnum, bootfunc=lambda v: np.array([v.mean(), v.var(ddof=1), len(v)]))
+        boot_mean_var_len1 = bootstrap(v1, bootnum=bootnum, bootfunc=lambda v: np.array([
+                                       v.mean(), v.var(ddof=1), len(v)]))
+        boot_mean_var_len2 = bootstrap(v2, bootnum=bootnum, bootfunc=lambda v: np.array([
+                                       v.mean(), v.var(ddof=1), len(v)]))
 
-    df = pd.DataFrame(np.concatenate([boot_mean_var_len1, boot_mean_var_len2], axis=1), \
+    df = pd.DataFrame(np.concatenate([boot_mean_var_len1, boot_mean_var_len2], axis=1),
                       columns=['mean1', 'var1', 'len1', 'mean2', 'var2', 'len2'])
-    boot_t_stat_pooled = t_stat_two_samples_with_pooled_variance(df['mean1'], df['mean2'], df['var1'], df['var2'], df['len1'] , df['len2'] ).values
+    boot_t_stat_pooled = t_stat_two_samples_with_pooled_variance(
+        df['mean1'], df['mean2'], df['var1'], df['var2'], df['len1'], df['len2']).values
     result['t'] = boot_t_stat_pooled
 
-    both = len(boot_t_stat_pooled[np.abs(boot_t_stat_pooled) >= np.abs(t_stat_observed)])
+    both = len(boot_t_stat_pooled[np.abs(
+        boot_t_stat_pooled) >= np.abs(t_stat_observed)])
     greater = len(boot_t_stat_pooled[boot_t_stat_pooled >= t_stat_observed])
     less = len(boot_t_stat_pooled[boot_t_stat_pooled <= t_stat_observed])
     total = len(boot_t_stat_pooled)
@@ -1061,18 +1093,23 @@ def bootstrap_two_sample_t_test_unpaired(v1, v2, alpha=0.05, alternative=None, b
     result['p-value'] = p_value
     return result
 
+
 def test_bootstrap_two_sample_t_test_unpaired():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
     # same as print(bootstrap_two_sample_t_test_unpaired(v1, v2, bootnum=100000))
-    pprint(bootstrap_two_sample_t_test_unpaired(v1, v2, bootnum=100000, alternative="two.sided"))
-    pprint(bootstrap_two_sample_t_test_unpaired(v1, v2, bootnum=100000, alternative="greater"))
-    pprint(bootstrap_two_sample_t_test_unpaired(v1, v2, bootnum=100000, alternative="less"))
+    pprint(bootstrap_two_sample_t_test_unpaired(
+        v1, v2, bootnum=100000, alternative="two.sided"))
+    pprint(bootstrap_two_sample_t_test_unpaired(
+        v1, v2, bootnum=100000, alternative="greater"))
+    pprint(bootstrap_two_sample_t_test_unpaired(
+        v1, v2, bootnum=100000, alternative="less"))
+
 
 def bootstrap_two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None, bootnum=599, csv_file=None, seed=2019):
     """
     # Bootstrap paired t-test as described in Efron and Tibshirani (1993), (Section 16.4, p225)
-    
+
     # In python:
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
@@ -1081,11 +1118,13 @@ def bootstrap_two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None, boo
     pprint(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000, alternative="greater"))
     pprint(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000, alternative="less"))
     """
-    assert len(v1.shape) == 1 and len(v2.shape) == 1, "only support the one dimension numpy array"
+    assert len(v1.shape) == 1 and len(
+        v2.shape) == 1, "only support the one dimension numpy array"
     assert alternative == None or alternative == "greater" or alternative == "less" or alternative == "two.sided",\
         "alternative have to be empty(default, same as two.sided) or greater or less or two.sided"
-    assert len(v1) == len(v2), "We are using paired T-test, the number of samples are same"
-    
+    assert len(v1) == len(
+        v2), "We are using paired T-test, the number of samples are same"
+
     result = {}
     if not alternative or alternative == "two.sided":
         result['title'] = "Bootstrap paired t-test (paired, two tailed)"
@@ -1113,13 +1152,14 @@ def bootstrap_two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None, boo
     def t_stat_one_sample_ndarray(v):
         return t_stat_one_sample(v.mean(), v.var(ddof=1), len(v))
 
-    v = v1 -v2
+    v = v1 - v2
     t_stat_observed = t_stat_one_sample_ndarray(v)
     result['t_obs'] = t_stat_observed
-    
+
     v = one_sample_normalization(v)
     with NumpyRNGContext(seed):
-        boot_t_stat = bootstrap(v, bootnum, bootfunc=lambda vec: t_stat_one_sample_ndarray(vec))
+        boot_t_stat = bootstrap(
+            v, bootnum, bootfunc=lambda vec: t_stat_one_sample_ndarray(vec))
     result['t'] = boot_t_stat
 
     both = len(boot_t_stat[np.abs(boot_t_stat) >= np.abs(t_stat_observed)])
@@ -1135,19 +1175,24 @@ def bootstrap_two_sample_t_test_paired(v1, v2, alpha=0.05, alternative=None, boo
     result['p-value'] = p_value
     return result
 
+
 def test_bootstrap_two_sample_t_test_paired():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
     # same as print(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000))
-    pprint(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000, alternative="two.sided"))
-    pprint(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000, alternative="greater"))
-    pprint(bootstrap_two_sample_t_test_paired(v1, v2, bootnum=100000, alternative="less"))
+    pprint(bootstrap_two_sample_t_test_paired(
+        v1, v2, bootnum=100000, alternative="two.sided"))
+    pprint(bootstrap_two_sample_t_test_paired(
+        v1, v2, bootnum=100000, alternative="greater"))
+    pprint(bootstrap_two_sample_t_test_paired(
+        v1, v2, bootnum=100000, alternative="less"))
+
 
 def bootstrap_one_sample_t_test(v, alpha=0.05, alternative=None, bootnum=599, csv_file=None, seed=2019):
     """
     # One sample t-test shares the same implementation of 
     # Bootstrap paired t-test as described in Efron and Tibshirani (1993), (Section 16.4, p225)
-    
+
     # In python:
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19]) 
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
@@ -1159,7 +1204,7 @@ def bootstrap_one_sample_t_test(v, alpha=0.05, alternative=None, bootnum=599, cs
     assert len(v.shape) == 1, "only support the one dimension numpy array"
     assert alternative == None or alternative == "greater" or alternative == "less" or alternative == "two.sided",\
         "alternative have to be empty(default, same as two.sided) or greater or less or two.sided"
-    
+
     result = {}
     if not alternative or alternative == "two.sided":
         result['title'] = "Bootstrap one sample t-test (two tailed)"
@@ -1189,10 +1234,11 @@ def bootstrap_one_sample_t_test(v, alpha=0.05, alternative=None, bootnum=599, cs
 
     t_stat_observed = t_stat_one_sample_ndarray(v)
     result['t_obs'] = t_stat_observed
-    
+
     v = one_sample_normalization(v)
     with NumpyRNGContext(seed):
-        boot_t_stat = bootstrap(v, bootnum, bootfunc=lambda vec: t_stat_one_sample_ndarray(vec))
+        boot_t_stat = bootstrap(
+            v, bootnum, bootfunc=lambda vec: t_stat_one_sample_ndarray(vec))
     result['t'] = boot_t_stat
 
     both = len(boot_t_stat[np.abs(boot_t_stat) >= np.abs(t_stat_observed)])
@@ -1208,35 +1254,43 @@ def bootstrap_one_sample_t_test(v, alpha=0.05, alternative=None, bootnum=599, cs
     result['p-value'] = p_value
     return result
 
+
 def test_bootstrap_one_sample_t_test():
-    # v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19]) 
+    # v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     # v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
     v1 = np.array([-9.21, -11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     # same as print(bootstrap_one_sample_t_test(v1, v2, bootnum=100000))
-    pprint(bootstrap_one_sample_t_test(v1, bootnum=100000, alternative="two.sided"))
-    pprint(bootstrap_one_sample_t_test(v1, bootnum=100000, alternative="greater"))
+    pprint(bootstrap_one_sample_t_test(
+        v1, bootnum=100000, alternative="two.sided"))
+    pprint(bootstrap_one_sample_t_test(
+        v1, bootnum=100000, alternative="greater"))
     pprint(bootstrap_one_sample_t_test(v1, bootnum=100000, alternative="less"))
+
 
 def test_boostrap_t_test():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
     # Two sample unpaired t test with bootstrap
-    pprint(bootstrap_t_test(v1, v2, paired=False, bootnum=100000)) # two-tailed
-    pprint(bootstrap_t_test(v1, v2, paired=False, alternative="greater", bootnum=100000)) # one-tailed
-    pprint(bootstrap_t_test(v1, v2, paired=False, alternative="less", bootnum=100000)) # one-tailed
+    pprint(bootstrap_t_test(v1, v2, paired=False, bootnum=100000))  # two-tailed
+    pprint(bootstrap_t_test(v1, v2, paired=False,
+                            alternative="greater", bootnum=100000))  # one-tailed
+    pprint(bootstrap_t_test(v1, v2, paired=False,
+                            alternative="less", bootnum=100000))  # one-tailed
     # Two sample paired t test with bootstrap
     pprint(bootstrap_t_test(v1, v2, paired=True, bootnum=100000))
-    pprint(bootstrap_t_test(v1, v2, paired=True, alternative="greater", bootnum=100000))
-    pprint(bootstrap_t_test(v1, v2, paired=True, alternative="less", bootnum=100000))
+    pprint(bootstrap_t_test(v1, v2, paired=True,
+                            alternative="greater", bootnum=100000))
+    pprint(bootstrap_t_test(v1, v2, paired=True,
+                            alternative="less", bootnum=100000))
     # One sample t test with bootstrap
     pprint(bootstrap_t_test(v1, bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="greater", bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="less", bootnum=100000))
 
-test_t_test()
-# test_boostrap()
-test_boostrap_ci()
-# test_bootstrap_two_sample_t_test_unpaired()
-# test_bootstrap_two_sample_t_test_paired()
-# test_bootstrap_one_sample_t_test()
-test_boostrap_t_test()
+# test_t_test()
+# # test_boostrap()
+# test_boostrap_ci()
+# # test_bootstrap_two_sample_t_test_unpaired()
+# # test_bootstrap_two_sample_t_test_paired()
+# # test_bootstrap_one_sample_t_test()
+# test_boostrap_t_test()
