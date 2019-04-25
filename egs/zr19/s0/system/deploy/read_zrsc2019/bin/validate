@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+from collections import defaultdict
+import read_zrsc2019 
+import logging
+import argparse 
+import sys
+import os.path as osp
+
+# Manage argument-given file 
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--dont-complain-about-missing-files', action="store_true")
+argparser.add_argument('folder', help=
+    "Name of the folder containing all your embedding files in .txt")
+argparser.add_argument('file_list', help=
+    "Name of file containing all your embeddings file names + wav duration")
+args = argparser.parse_args()
+
+try:
+    read_zrsc2019.read_all(args.file_list, args.folder,
+                           not args.dont_complain_about_missing_files,
+                           log=True)
+except IOError as e:
+    sys.exit("Error opening file list: " + str(e))
+
+
+
