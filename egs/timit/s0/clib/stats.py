@@ -35,13 +35,13 @@ def t_test(v1: np.ndarray,
     --------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    # Two sample unpaired t test
+    # Two sample unpaired t-test
     print(t_test(v1, v2, paired=False)) # two-tailed
     print(t_test(v1, v2, paired=False, alternative="greater")) # one-tailed
-    # Two sample paired t test
+    # Two sample paired t-test
     print(t_test(v1, v2, paired=True))
     print(t_test(v1, v2, paired=True, alternative="greater"))
-    # One sample t test
+    # One sample t-test
     print(t_test(v1))
     print(t_test(v1, alternative="greater"))
 
@@ -122,7 +122,7 @@ def t_test(v1: np.ndarray,
     ---------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    print(t_test(v1, v2, paired=True)) # Two sample paired t test
+    print(t_test(v1, v2, paired=True)) # Two sample paired t-test
     # {'alternative_hypothesis': 'true difference in means is not equal to 0',
     #  'confidence_interval': [0.39454766585932055, 3.614341223029567],
     #  'df': 8,
@@ -155,7 +155,7 @@ def t_test(v1: np.ndarray,
     ---------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    print(t_test(v1, v2, paired=True, alternative="greater")) # Two sample paired t test
+    print(t_test(v1, v2, paired=True, alternative="greater")) # Two sample paired t-test
     # {'alternative_hypothesis': 'true difference in means is greater than 0',
     #  'confidence_interval': [0.7062332444940196, inf],
     #  'df': 8,
@@ -187,7 +187,7 @@ def t_test(v1: np.ndarray,
     ---------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    print(t_test(v1)) # One sample t test
+    print(t_test(v1)) # One sample t-test
     # {'alternative_hypothesis': 'true mean is not equal to 0',
     #  'confidence_interval': [9.223278703348157, 11.372276852207396],
     #  'df': 8,
@@ -243,12 +243,12 @@ def t_test(v1: np.ndarray,
     #  10.29778
  """
     if v2 is None:
-        return one_sample_t_test(v1, alpha, alternative)  # One sample t test
+        return one_sample_t_test(v1, alpha, alternative)  # One sample t-test
     elif paired:
-        # Two sample paired t test
+        # Two sample paired t-test
         return two_sample_t_test_paired(v1, v2, alpha, alternative)
     else:
-        # Two sample unpaired t test
+        # Two sample unpaired t-test
         return two_sample_t_test_unpaired(v1, v2, alpha, alternative)
 
 
@@ -279,7 +279,7 @@ def bootstrap_t_test(v1: np.ndarray,
     paired: a logical indicating whether you want a paired t-test
                  when your data is paired with same size, set paired equal to true
                  when your data is not paired with possible different size, set paired equal to false
-    alpha: confidence level of the interval (not used in bootsrap version, may for future implementing bootstrap-t C.I.)
+    alpha: confidence level of the interval (not used in bootstrap version, may for future implementing bootstrap-t C.I.)
     bootnum: number of samples for bootstrap simulation
          Rand R. Wilcox suggests the bootstrap number can be 599.
          Larry Wasserman suggests B = 10000 is usually sufficient in practice. 
@@ -294,15 +294,15 @@ def bootstrap_t_test(v1: np.ndarray,
     --------
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    # Two sample unpaired t test with bootstrap
+    # Two sample unpaired t-test with bootstrap
     print(bootstrap_t_test(v1, v2, paired=False, bootnum=100000)) # two-tailed
     print(bootstrap_t_test(v1, v2, paired=False, alternative="greater", bootnum=100000)) # one-tailed
     print(bootstrap_t_test(v1, v2, paired=False, alternative="less", bootnum=100000)) # one-tailed
-    # Two sample paired t test with bootstrap
+    # Two sample paired t-test with bootstrap
     print(bootstrap_t_test(v1, v2, paired=True, bootnum=100000))
     print(bootstrap_t_test(v1, v2, paired=True, alternative="greater", bootnum=100000))
     print(bootstrap_t_test(v1, v2, paired=True, alternative="less", bootnum=100000))
-    # One sample t test with bootstrap
+    # One sample t-test with bootstrap
     print(bootstrap_t_test(v1, bootnum=100000))
     print(bootstrap_t_test(v1, alternative="greater", bootnum=100000))
     print(bootstrap_t_test(v1, alternative="less", bootnum=100000))
@@ -413,7 +413,7 @@ def bootstrap_t_test(v1: np.ndarray,
     ++++++++++++++++++++++++++
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    # Two sample paired t test with bootstrap
+    # Two sample paired t-test with bootstrap
     pprint(bootstrap_t_test(v1, v2, paired=True, bootnum=100000))
     pprint(bootstrap_t_test(v1, v2, paired=True, alternative="greater", bootnum=100000))
     pprint(bootstrap_t_test(v1, v2, paired=True, alternative="less", bootnum=100000))
@@ -444,7 +444,7 @@ def bootstrap_t_test(v1: np.ndarray,
     +++++++++++++++++++++++++++
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    # One sample t test with bootstrap
+    # One sample t-test with bootstrap
     pprint(bootstrap_t_test(v1, bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="greater", bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="less", bootnum=100000))
@@ -471,11 +471,11 @@ def bootstrap_t_test(v1: np.ndarray,
     #  'title': 'Bootstrap one sample t-test (one tailed)'}
 
 """
-    if v2 is None:  # Bootstrap one sample t test
+    if v2 is None:  # Bootstrap one sample t-test
         return bootstrap_one_sample_t_test(v1, alpha, alternative, bootnum, csv_file, seed)
-    elif paired:  # Bootstrap two sample paired t test
+    elif paired:  # Bootstrap two sample paired t-test
         return bootstrap_two_sample_t_test_paired(v1, v2, alpha, alternative, bootnum, csv_file, seed)
-    else:  # Bootstrap two sample unpaired t test (checked by R)
+    else:  # Bootstrap two sample unpaired t-test (checked by R)
         return bootstrap_two_sample_t_test_unpaired(v1, v2, alpha, alternative, bootnum, csv_file, seed)
 
 
@@ -955,20 +955,20 @@ def test_t_test():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
 
-    # Two sample unpaired t test
+    # Two sample unpaired t-test
     pprint(t_test(v1, v2, paired=False))  # two-tailed
     pprint(t_test(v1, v2, paired=False, alternative="greater"))  # one-tailed
 
-    # Two sample paired t test
+    # Two sample paired t-test
     pprint(t_test(v1, v2, paired=True))
     pprint(t_test(v1, v2, paired=True, alternative="greater"))
 
-    # One sample t test
+    # One sample t-test
     pprint(t_test(v1))
     pprint(t_test(v1, alternative="greater"))
 
 
-def test_boostrap():
+def test_bootstrap():
     with NumpyRNGContext(2019):
         boot_result = bootstrap(np.array([[1, 1], [2, 2], [3, 3]]), bootnum=2)
         print(boot_result)
@@ -988,7 +988,7 @@ def test_boostrap():
         print(df_bootstrap(df, bootnum=2, bootfunc=np.mean, axis=0))
 
 
-def test_boostrap_ci():
+def test_bootstrap_ci():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
 
@@ -1267,30 +1267,30 @@ def test_bootstrap_one_sample_t_test():
     pprint(bootstrap_one_sample_t_test(v1, bootnum=100000, alternative="less"))
 
 
-def test_boostrap_t_test():
+def test_bootstrap_t_test():
     v1 = np.array([9.21, 11.51, 12.79, 11.85, 9.97, 8.79, 9.69, 9.68, 9.19])
     v2 = np.array([7.53, 7.48, 8.08, 8.09, 10.15, 8.4, 10.88, 6.13, 7.9])
-    # Two sample unpaired t test with bootstrap
+    # Two sample unpaired t-test with bootstrap
     pprint(bootstrap_t_test(v1, v2, paired=False, bootnum=100000))  # two-tailed
     pprint(bootstrap_t_test(v1, v2, paired=False,
                             alternative="greater", bootnum=100000))  # one-tailed
     pprint(bootstrap_t_test(v1, v2, paired=False,
                             alternative="less", bootnum=100000))  # one-tailed
-    # Two sample paired t test with bootstrap
+    # Two sample paired t-test with bootstrap
     pprint(bootstrap_t_test(v1, v2, paired=True, bootnum=100000))
     pprint(bootstrap_t_test(v1, v2, paired=True,
                             alternative="greater", bootnum=100000))
     pprint(bootstrap_t_test(v1, v2, paired=True,
                             alternative="less", bootnum=100000))
-    # One sample t test with bootstrap
+    # One sample t-test with bootstrap
     pprint(bootstrap_t_test(v1, bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="greater", bootnum=100000))
     pprint(bootstrap_t_test(v1, alternative="less", bootnum=100000))
 
 # test_t_test()
-# # test_boostrap()
-# test_boostrap_ci()
+# # test_bootstrap()
+# test_bootstrap_ci()
 # # test_bootstrap_two_sample_t_test_unpaired()
 # # test_bootstrap_two_sample_t_test_paired()
 # # test_bootstrap_one_sample_t_test()
-# test_boostrap_t_test()
+# test_bootstrap_t_test()
