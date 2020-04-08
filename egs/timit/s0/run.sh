@@ -140,14 +140,14 @@ if [ $stage -le 3 ]; then
     head -3 dpgmm/test/test.size > dpgmm/test3/test3.size
 
     # Split the posteriorgram and label to each utterance.
-    g++ local/split_post.cpp -o local/split_post
+    g++ local/split_post_old.cpp -o local/split_post_old
     mkdir -p dpgmm/test3/data/01.raw.mfcc/cluster_label/
-    ./local/split_post dpgmm/test3/test3.size dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel dpgmm/test3/data/01.raw.mfcc/cluster_label/
+    ./local/split_post_old dpgmm/test3/test3.size dpgmm/test3/timit_test3_raw.mfcc.dpmm.flabel dpgmm/test3/data/01.raw.mfcc/cluster_label/
 
     mkdir -p dpgmm/test/data/mfcc.deltas/cluster_label
-    ./local/split_post dpgmm/test/test.size dpgmm/test/timit_test_raw.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.deltas/cluster_label
+    ./local/split_post_old dpgmm/test/test.size dpgmm/test/timit_test_raw.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.deltas/cluster_label
     mkdir -p dpgmm/test/data/mfcc.vtln.deltas/cluster_label
-    ./local/split_post dpgmm/test/test.size dpgmm/test/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.vtln.deltas/cluster_label
+    ./local/split_post_old dpgmm/test/test.size dpgmm/test/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel dpgmm/test/data/mfcc.vtln.deltas/cluster_label
 fi
 
 if [ $stage -le 4 ]; then
@@ -205,6 +205,10 @@ if [ $stage -le 5 ]; then
     for file in exp/dpgmm/baseline/data/merge_label/*; do
 	awk '{print $1}' $file > data/test_time/test_abx_time/$(basename $file .mlabel.abx)
     done
+
+    for file in $(ls data/test_time/test_abx_time/*); do
+	echo $(basename $file) $(wc -l $file | awk '{print $1}');
+    done > data/test/utt2num_frames_abx_time
 fi
 
 if [ $stage -le 6 ]; then

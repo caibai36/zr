@@ -1,4 +1,22 @@
-head eval/abx/result/exp/dpgmm/baseline/*/*/results.txt
-head eval/abx/result/exp/selffeat/feat/*/*/results.txt
-head eval/abx/result/exp/selffeat/post/*/*/results.txt
-# head eval/abx/result/exp/hybrid/mse/*/*/results.txt
+# # head eval/abx/result/exp/dpgmm/baseline/*/*/results.txt
+# head eval/abx/result/exp/dpgmm/baseline/*/*/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)_post\/(cos|edit|kl)\/results\.txt/, "\\1_\\2", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | tee exp/results/baseline/abx.txt
+
+# # head eval/abx/result/exp/selffeat/feat/*/*/results.txt
+# # head eval/abx/result/exp/selffeat/post/*/*/results.txt
+# head eval/abx/result/exp/selffeat/*/*/*/results.txt| awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*)_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | tee exp/results/selffeat/abx.txt
+
+# # head eval/abx/result/exp/hybrid/mse/*/*/results.txt
+# # head eval/abx/result/exp/hybrid/ce/*/*/results.txt
+# head eval/abx/result/exp/hybrid/*/*/*/results.txt| awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | tee exp/results/hybrid/abx.txt
+
+# head eval/abx/result/exp/hybrid_onehot/mse/*/*/results.txt
+# head eval/abx/result/exp/hybrid_onehot/ce/*/*/results.txt
+# head eval/abx/result/exp/hybrid_onehot/mse/*/*/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | sort -k1.58,1  -k1.56,1.57g  | tee exp/results/hybrid_onehot/mse_abx.txt
+head eval/abx/result/exp/hybrid_onehot/ce/*b[0-9][^f]*/*/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | sort -k1.59,1  -k1.57,1.58g  | tee exp/results/hybrid_onehot/ce_abx.txt
+
+# # head eval/abx/result/exp/*/*/v2*/*/mi_result.txt
+# head eval/abx/result/exp/*/*/v2*/*/mi_result.txt | awk 'BEGIN {printf "Method\thomogeneity\tcompleteness\tv_measure\n"} /mi_result/ {printf gensub(/.*\/(.*).post_post\/mi\/mi_result\.txt/, "\\1", "g", $2)"\t"} /homogenetiy:/ {printf $2"\t"} /completeness:/ {printf $2"\t"} /v_measure:/ {print $2}' | sort -k1.44,1.48 -k1.53,1.54g | tee exp/results/hybrid/mi.txt
+
+# head eval/abx/result/exp/hybrid_onehot/ce/*flabel*/kl/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | sort -k1.59,1  -k1.57,1.58g  | sed '2{h;d};7G' | tee exp/results/hybrid_onehot/ce_abx_bi_kl.txt
+# head eval/abx/result/exp/hybrid_onehot/ce/*flabel*/edit/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | sort -k1.59,1  -k1.57,1.58g  | sed '2{h;d};7G' | tee exp/results/hybrid_onehot/ce_abx_bi_edit.txt
+# head eval/abx/result/exp/hybrid_onehot/ce/*flabel*/cos/results.txt | awk 'BEGIN {printf "Method\tAcross\tWithin\n"} /results/ {printf gensub(/.*\/(.*)\/(.*).post_post\/(cos|edit|kl)\/results\.txt/, "\\1.\\2_\\3", "g", $2)"\t"} /across/ {printf $2"\t"} /within/ {print $2}' | sort -k1.59,1  -k1.57,1.58g  | sed '2{h;d};7G' | tee exp/results/hybrid_onehot/ce_abx_bi_cos.txt

@@ -212,3 +212,5 @@ python local/hybird_sys_ce.py \
 
 # cat exp/hybrid/ce/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel | python local/labelseq2onehot.py > exp/hybrid/ce/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel.onehot.post
 # cat exp/hybrid/ce/v2_timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel | python local/labelseq2onehot.py > exp/hybrid/ce/v2_timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.flabel.onehot.post
+# cat exp/hybrid/ce/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.post | python local/post2onehot.py > exp/hybrid/ce/timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.post.onehot.post
+# cat exp/hybrid/ce/v2_timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.post | python local/post2onehot.py > exp/hybrid/ce/v2_timit_test_raw.vtln.cmvn.deltas.mfcc.dpmm.post.onehot.post
