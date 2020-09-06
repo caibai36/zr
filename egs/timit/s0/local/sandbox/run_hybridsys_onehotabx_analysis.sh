@@ -5,7 +5,8 @@ echo ===========================================================================
 echo "              Evaluate the representation by ABX test                     "
 echo ============================================================================
 
-for dir in $(ls -d eval/abx/post/exp/hybrid_onehot/*/*flabel*{b16,onehot}*post); do
+#for dir in $(ls -d eval/abx/post/exp/hybrid_onehot/*/*flabel*{b16,onehot}*post); do
+for dir in $(ls -d eval/abx/post/exp/hybrid_onehot/*/*flabel*{b0,b2,b4,b8}*post); do
     abx_post=$dir
     abx_result=$(echo $dir | sed 's:post:result:')
     echo $abx_result
